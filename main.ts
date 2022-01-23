@@ -80,9 +80,11 @@ const body = stringify({
         pubDate: new Date().toUTCString(),
         lastBuildDate:new Date().toUTCString(),
         generator: 'foooo',
-        item: items.map((item:any) => ({
+        item: items
+        .filter((x:any) => !x.reblog)
+        .map((item:any) => ({
             title: item.content.slice(0,140),
-            description: (`${item.content}
+            description: (`${item.content || ''}
             ${item.media_attachments.filter((a:any) => a.type === 'image').map((a:any) => `<img src="${a.preview_url}" />`)}
 
             ${item.quote?.content || ''}
