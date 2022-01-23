@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.122.0/http/server.ts";
-import { stringify } from "https://deno.land/x/xml@2.0.3/mod.ts";
 
 const port = 8080;
 
@@ -69,37 +68,8 @@ if(items.error){
     
 }
 console.log(items.length)
-const body = stringify({
-    rss:{
-       '@xmlns:atom':'http://www.w3.org/2005/Atom' ,
-       '@version':'2.0',
-       channel:{
-        title: username,
-        description:`latest posts from ${username}`,
-        link:'https://gab.com/'+username,
-        pubDate: new Date(),
-        lastBuildDate:new Date(),
-        generator: 'foooo',
-        item: items.map((item:any) => ({
-            title: item.content.slice(0,140),
-            description: decodeURI(`item.content ${item.content}
-            item.quote?.content ${item.quote?.content || ''}
-            item.reblog?.content ${item.reblog?.content || ''}
-            item.reblog?.quote?.content ${item.reblog?.quote?.content || ''}
-            `),
-            pubDate: item.created_at, 
-            link: item.url,
-            guid:item.id,
-            
-        })),
-        // <link>https://ramsay.xyz/</link>
-        // <atom:link href="https://ramsay.xyz/feed.xml" rel="self" type="application/rss+xml"/>
-        // <pubDate>Wed, 05 Jan 2022 21:33:58 -0600</pubDate>
-        // <lastBuildDate>Wed, 05 Jan 2022 21:33:58 -0600</lastBuildDate>
-        // <generator>Jekyll v4.2.0</generator>
-       }
-    }
-},{replacer:({value})=>value})
+//<atom:link href="https://ramsay.xyz/feed.xml" rel="self" type="application/rss+xml"/>
+
 const headers = new Headers();
 headers.append('content-type','application/rss+xml')
 
@@ -109,7 +79,6 @@ headers.append('content-type','application/rss+xml')
 <title>Simon Ramsay</title>
 <description>A personal blog about shitty infrequent random programing tips</description>
 <link>https://ramsay.xyz/</link>
-<atom:link href="https://ramsay.xyz/feed.xml" rel="self" type="application/rss+xml"/>
 <pubDate>Wed, 05 Jan 2022 21:33:58 -0600</pubDate>
 <lastBuildDate>Wed, 05 Jan 2022 21:33:58 -0600</lastBuildDate>
 <generator>Jekyll v4.2.0</generator>
@@ -122,11 +91,11 @@ ${items.map((item:any)=>`<item>
             item.reblog?.quote?.content ${item.reblog?.quote?.content || ''}
             `}
             </description>
-            <pubDate>${item.created_at}</pubDate>
+            <pubDate>${new Date(item.created_at).toUTCString()}</pubDate>
             <link>${item.url}</link>
-            <guid>${item.id}</guid>
+            <guid>${item.url}</guid>
 </item>
-`)}
+`).join('\n')}
 </channel>
 </rss>
 `, { status: 200, headers });
