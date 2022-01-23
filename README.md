@@ -17,5 +17,6 @@ or deploy to https://deno.com/deploy/docs/deployments
 ### todo:
 - clean up code
 - check on dockerfile
+- proxy images + videos
 - better structure content to account for reblog + quotes
 - include videos
