@@ -82,10 +82,15 @@ const body = stringify({
         generator: 'foooo',
         item: items.map((item:any) => ({
             title: item.content.slice(0,140),
-            description: (`item.content ${item.content}
-            item.quote?.content ${item.quote?.content || ''}
-            item.reblog?.content ${item.reblog?.content || ''}
-            item.reblog?.quote?.content ${item.reblog?.quote?.content || ''}
+            description: (`${item.content}
+            ${item.media_attachments.filter((a:any) => a.type === 'image').map((a:any) => `<img src="${a.preview_url}" />`)}
+
+            ${item.quote?.content || ''}
+            ${item.quote?.media_attachments.filter((a:any) => a.type === 'image').map((a:any) => `<img src="${a.preview_url}" />`)}
+
+            ${item.reblog?.content || ''}
+            ${item.reblog?.media_attachments.filter((a:any) => a.type === 'image').map((a:any) => `<img src="${a.preview_url}" />`)}
+
             `),
             pubDate: new Date(item.created_at).toUTCString(), 
             link: item.url,
