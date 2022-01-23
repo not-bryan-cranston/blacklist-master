@@ -9,27 +9,22 @@ const handler = async (request: Request): Promise<Response> => {
         return new Response(`
         <html>
         <body>
-            <h1>TEST PAGE!</h1>
+<a href="https://github.com/not-bryan-cranston/blacklist-master">https://github.com/not-bryan-cranston/blacklist-master</a>
         </body>
         </html>
         `, { status: 200 });
     } else if (url.pathname === '/favicon.ico'){
         return new Response(`
-        <html>
-        <body>
-            <h1>TEST PAGE!</h1>
-        </body>
-        </html>
+       
         `, { status: 200 });
     }
     else {
        const username =  url.pathname.split('/')[1].split('.')[0]
-       console.log(username)
 
        const f = await fetch("https://gab.com/api/v1/account_by_username/"+username, {
-        "credentials": "include",
+        // "credentials": "include",
         "headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0",
+            "User-Agent": "not-bryan-cranston/blacklist-master-0.1",
             "Accept": "application/json, text/plain, */*",
             "Accept-Language": "en-US,en;q=0.5",
             // "X-CSRF-Token": "4gWSACnyj6/Ojkd1rH6I6+d5vpPEZJhz/j4YV9i7RuZ6paAZX5kXyBtLmhLLvsrWYZ0wZmTWwf1OrMiA9GctSA==",
@@ -37,9 +32,9 @@ const handler = async (request: Request): Promise<Response> => {
             "Sec-Fetch-Mode": "cors",
             "Sec-Fetch-Site": "same-origin"
         },
-        "referrer": "https://gab.com/",
+        // "referrer": "https://gab.com/",
         "method": "GET",
-        "mode": "cors"
+        // "mode": "cors"
     });
    
 
@@ -49,26 +44,24 @@ const handler = async (request: Request): Promise<Response> => {
      return new Response('errpr'+user.error,{status:500})   
     }
       const ff =  await fetch(`https://gab.com/api/v1/accounts/${user.id}/statuses?exclude_replies=true`, {
-    "credentials": "include",
+    // "credentials": "include",
     "headers": {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0",
+        "User-Agent": "not-bryan-cranston/blacklist-master-0.1",
         "Accept": "application/json, text/plain, */*",
         "Accept-Language": "en-US,en;q=0.5",
-        // "X-CSRF-Token": "0WT0Evxnx/9zTM14xDwWdLPh4Fk1z1NN4Q4SdJqlznpJxMYLigxfmKaJEB+j/FRJNQVurJV9CsNRnMKjtnml1A==",
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin"
     },
-    "referrer": "https://gab.com/",
+    // "referrer": "https://gab.com/",
     "method": "GET",
-    "mode": "cors"
+    // "mode": "cors"
 });
 const items = await ff.json()
 if(items.error){
     return new Response(items.error,{status:500})   
     
 }
-console.log(items.length)
 const body = stringify({
     rss:{
        '@xmlns:atom':'http://www.w3.org/2005/Atom' ,
@@ -79,7 +72,7 @@ const body = stringify({
         link:'https://gab.com/'+username,
         pubDate: new Date().toUTCString(),
         lastBuildDate:new Date().toUTCString(),
-        generator: 'foooo',
+        generator: 'not-bryan-cranston/blacklist-master',
         item: items
         .filter((x:any) => !x.reblog)
         .map((item:any) => ({
@@ -88,10 +81,10 @@ const body = stringify({
             ${item.media_attachments.filter((a:any) => a.type === 'image').map((a:any) => `<img src="${a.preview_url}" />`)}
 
             ${item.quote?.content || ''}
-            ${item.quote?.media_attachments.filter((a:any) => a.type === 'image').map((a:any) => `<img src="${a.preview_url}" />`)}
+            ${item.quote?.media_attachments.filter((a:any) => a.type === 'image').map((a:any) => `<img src="${a.preview_url}" />`) || ''}
 
             ${item.reblog?.content || ''}
-            ${item.reblog?.media_attachments.filter((a:any) => a.type === 'image').map((a:any) => `<img src="${a.preview_url}" />`)}
+            ${item.reblog?.media_attachments.filter((a:any) => a.type === 'image').map((a:any) => `<img src="${a.preview_url}" />`) || ''}
 
             `),
             pubDate: new Date(item.created_at).toUTCString(), 
@@ -99,11 +92,7 @@ const body = stringify({
             guid:item.url,
             
         })),
-        // <link>https://ramsay.xyz/</link>
-        // <atom:link href="https://ramsay.xyz/feed.xml" rel="self" type="application/rss+xml"/>
-        // <pubDate>Wed, 05 Jan 2022 21:33:58 -0600</pubDate>
-        // <lastBuildDate>Wed, 05 Jan 2022 21:33:58 -0600</lastBuildDate>
-        // <generator>Jekyll v4.2.0</generator>
+        
        }
     }
 },{replacer:({value})=>value})
