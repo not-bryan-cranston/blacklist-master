@@ -85,10 +85,10 @@ headers.append('content-type','application/rss+xml')
 ${items.map((item:any)=>`<item>
 <title>item.content.slice(0,140)</title>
             <description>
-            ${`item.content ${item.content}
-            item.quote?.content ${item.quote?.content || ''}
-            item.reblog?.content ${item.reblog?.content || ''}
-            item.reblog?.quote?.content ${item.reblog?.quote?.content || ''}
+            ${`item.content ${encodeURI(item.content)}
+            item.quote?.content ${encodeURI(item.quote?.content || '')}
+            item.reblog?.content ${encodeURI(item.reblog?.content || '')}
+            item.reblog?.quote?.content ${encodeURI(item.reblog?.quote?.content || '')}
             `}
             </description>
             <pubDate>${new Date(item.created_at).toUTCString()}</pubDate>
