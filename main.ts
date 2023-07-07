@@ -37,7 +37,10 @@ const handler = async (request: Request): Promise<Response> => {
         // "mode": "cors"
     });
    
+if (!f.ok){
+    return new Response('errpr: '+f.status+'   '+(await f.text),{status:500})   
 
+}
     const user = await f.json()
     if(user.error){
         //Record not found
@@ -57,6 +60,10 @@ const handler = async (request: Request): Promise<Response> => {
     "method": "GET",
     // "mode": "cors"
 });
+if (!ff.ok){
+    return new Response('errprffff: '+ff.status+'   '+(await ff.text),{status:500})   
+
+}
 const items = await ff.json()
 if(items.error){
     return new Response(items.error,{status:500})   
